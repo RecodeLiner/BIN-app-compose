@@ -37,8 +37,7 @@ class MainActivity : ComponentActivity() {
             BinSRCTheme {
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize()
-                    ,
+                        .fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     InputBlock()
