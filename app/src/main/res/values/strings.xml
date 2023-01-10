@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">BinSRC</string>
+    <string name="button_text">Найти информацию по bin</string>
+</resources>
