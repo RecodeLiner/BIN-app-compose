@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -52,18 +54,20 @@ fun InputBlock(modifier: Modifier = Modifier) {
     val padding = WindowInsets.systemBars.asPaddingValues()
     val textState = remember { mutableStateOf("") }
 
-    Column{
+    Column(
+        verticalArrangement = Arrangement.Center,
+    ){
         TextField(
             value = textState.value,
             onValueChange = { textState.value = it },
-            label = { Text("Label") },
+            label = { Text(LocalContext.current.getString(R.string.label_text)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(padding)
                 .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(4.dp))
         )
         Button(
-            onClick = { },
+            onClick = {  },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
