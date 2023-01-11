@@ -69,6 +69,7 @@ fun InputBlock(modifier: Modifier = Modifier) {
         TextField(
             value = textState.value,
             onValueChange = { textState.value = it },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             label = { Text(LocalContext.current.getString(R.string.label_text)) },
             modifier = Modifier
                 .fillMaxWidth()
