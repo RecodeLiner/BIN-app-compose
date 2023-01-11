@@ -77,12 +77,17 @@ class MainScreen {
         RetrofitInstance.retrofitRq.getFromApi(BIN).enqueue(
             object : Callback<ApiModel> {
                 override fun onResponse(call: Call<ApiModel>, response: Response<ApiModel>) {
-                    if(response.code()==200) {
-                        apiModel = response.body()!!
-                        Temp.value = apiModel.bank.name
-                    }
-                    else{
-                        Temp.value = context.getString(R.string.unknown_code) + response.code()
+                    when (response.code()) {
+                        200 -> {
+                            apiModel = response.body()!!
+                            temp.value = apiModel.bank.name
+                        }
+                        404 -> {
+                            temp.value = context.getString(R.string.not_found)
+                        }
+                        else -> {
+                            temp.value = context.getString(R.string.unknown_code) + response.code()
+                        }
                     }
                 }
                 override fun onFailure(call: Call<ApiModel>, t: Throwable) {
