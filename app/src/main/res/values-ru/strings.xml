@@ -2,4 +2,6 @@
     <string name="app_name">BinSRC</string>
     <string name="button_text">Найти информацию по BIN</string>
     <string name="label_text">Введите восьмизначный BIN</string>
+    <string name="unknown_code">"Неизвестный код результата: "</string>
+    <string name="invalid_bin">Неправильный код BIN</string>
 </resources>
