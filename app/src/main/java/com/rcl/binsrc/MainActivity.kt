@@ -1,5 +1,6 @@
 package com.rcl.binsrc
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -23,11 +25,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import com.rcl.binsrc.retrofit.ApiModel
+import com.rcl.binsrc.retrofit.RetrofitInstance.retrofitRq
 import com.rcl.binsrc.ui.theme.BinSRCTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,10 +54,13 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+lateinit var apiModel : ApiModel;
+var Stt = mutableStateOf("")
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputBlock(modifier: Modifier = Modifier) {
-    val padding = WindowInsets.systemBars.asPaddingValues()
+    val context = LocalContext.current
     val textState = remember { mutableStateOf("") }
 
     Column(
@@ -66,12 +76,38 @@ fun InputBlock(modifier: Modifier = Modifier) {
                 .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(4.dp))
         )
         Button(
-            onClick = {  },
+            onClick = { loadData(textState.value, context) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
             Text(LocalContext.current.getString(R.string.button_text))
         }
+        Text(text = Stt.value)
     }
+}
+
+fun loadData(BIN: String, context: Context) {
+    val regEx = "^[0-9]{8}$".toRegex()
+    val res = regEx.matches(BIN)
+    if(!res){
+        Stt.value = context.getString(R.string.invalid_bin)
+        return
+    }
+    retrofitRq.getFromApi(BIN).enqueue(
+        object : Callback<ApiModel> {
+            override fun onResponse(call: Call<ApiModel>, response: Response<ApiModel>) {
+                if(response.code()==200) {
+                    apiModel = response.body()!!
+                   Stt.value = apiModel.bank.name
+                }
+                else{
+                    Stt.value = context.getString(R.string.unknown_code) + response.code()
+                }
+            }
+            override fun onFailure(call: Call<ApiModel>, t: Throwable) {
+                Stt.value = t.message!!
+            }
+        }
+    )
 }
