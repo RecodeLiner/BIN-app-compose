@@ -12,7 +12,7 @@ class NavClass{
     fun Navigation(navController: NavHostController) {
         NavHost(navController = navController, startDestination = Routes.MainScreen.routes) {
             composable(Routes.MainScreen.routes) {
-                MainScreen().Screen()
+                MainScreen().Screen(navController = navController)
             }
             composable(Routes.HistoryScreen.routes) {
                 HistoryScreen().Screen()
