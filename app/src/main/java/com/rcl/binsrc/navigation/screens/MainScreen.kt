@@ -34,7 +34,7 @@ class MainScreen {
     }
 
     lateinit var apiModel : ApiModel
-    var Temp = mutableStateOf("")
+    var temp = mutableStateOf("")
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -63,15 +63,15 @@ class MainScreen {
             ) {
                 Text(LocalContext.current.getString(R.string.button_text))
             }
-            Text(text = Temp.value)
+            Text(text = temp.value)
         }
     }
 
-    fun loadData(BIN: String, context: Context) {
+    private fun loadData(BIN: String, context: Context) {
         val regEx = "^[0-9]{8}$".toRegex()
         val res = regEx.matches(BIN)
         if(!res){
-            Temp.value = context.getString(R.string.invalid_bin)
+            temp.value = context.getString(R.string.invalid_bin)
             return
         }
         RetrofitInstance.retrofitRq.getFromApi(BIN).enqueue(
@@ -91,7 +91,7 @@ class MainScreen {
                     }
                 }
                 override fun onFailure(call: Call<ApiModel>, t: Throwable) {
-                    Temp.value = t.message!!
+                    temp.value = t.message!!
                 }
             }
         )
