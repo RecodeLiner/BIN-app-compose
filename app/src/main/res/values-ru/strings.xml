@@ -4,4 +4,5 @@
     <string name="label_text">Введите восьмизначный BIN</string>
     <string name="unknown_code">"Неизвестный код результата: "</string>
     <string name="invalid_bin">Неправильный код BIN</string>
+    <string name="not_found">Подобный BIN не обнаружен</string>
 </resources>
