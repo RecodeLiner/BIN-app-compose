@@ -73,7 +73,7 @@ fun InputBlock(modifier: Modifier = Modifier) {
             label = { Text(LocalContext.current.getString(R.string.label_text)) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(padding)
+                .padding(20.dp, 0.dp)
                 .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(4.dp))
         )
         Button(
