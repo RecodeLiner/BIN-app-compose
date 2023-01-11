@@ -1,9 +1,11 @@
 package com.rcl.binsrc.navigation.screens
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,10 +18,12 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.rcl.binsrc.R
 import com.rcl.binsrc.retrofit.ApiModel
 import com.rcl.binsrc.retrofit.RetrofitInstance
@@ -28,12 +32,13 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MainScreen {
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @Composable
-    fun Screen() {
+    fun Screen(navController: NavHostController) {
         InputBlock()
     }
 
-    lateinit var apiModel : ApiModel
+    lateinit var apiModel: ApiModel
     var temp = mutableStateOf("")
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -41,60 +46,62 @@ class MainScreen {
     fun InputBlock(modifier: Modifier = Modifier) {
         val context = LocalContext.current
         val textState = remember { mutableStateOf("") }
-
-        Column(
-            verticalArrangement = Arrangement.Center,
-        ){
-            TextField(
-                value = textState.value,
-                onValueChange = { textState.value = it },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                label = { Text(LocalContext.current.getString(R.string.label_text)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp, 0.dp)
-                    .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(4.dp))
-            )
-            Button(
-                onClick = { loadData(textState.value, context) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(LocalContext.current.getString(R.string.button_text))
+        Box(Modifier.fillMaxSize()) {
+            Column(Modifier.align(Alignment.Center)) {
+                TextField(
+                    value = textState.value,
+                    onValueChange = { textState.value = it },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    label = { Text(LocalContext.current.getString(R.string.label_text)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp, 0.dp)
+                        .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(4.dp))
+                )
+                Button(
+                    onClick = { loadData(textState.value, context) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text(LocalContext.current.getString(R.string.button_text))
+                }
+                Text(text = temp.value)
             }
-            Text(text = temp.value)
         }
     }
+        private fun loadData(BIN: String, context: Context) {
+            val regEx = "^[0-9]{8}$".toRegex()
+            val res = regEx.matches(BIN)
+            if (!res) {
+                temp.value = context.getString(R.string.invalid_bin)
+                return
+            }
+            RetrofitInstance.retrofitRq.getFromApi(BIN).enqueue(
+                object : Callback<ApiModel> {
+                    override fun onResponse(call: Call<ApiModel>, response: Response<ApiModel>) {
+                        when (response.code()) {
+                            200 -> {
+                                apiModel = response.body()!!
+                                temp.value = apiModel.bank.name
+                            }
 
-    private fun loadData(BIN: String, context: Context) {
-        val regEx = "^[0-9]{8}$".toRegex()
-        val res = regEx.matches(BIN)
-        if(!res){
-            temp.value = context.getString(R.string.invalid_bin)
-            return
-        }
-        RetrofitInstance.retrofitRq.getFromApi(BIN).enqueue(
-            object : Callback<ApiModel> {
-                override fun onResponse(call: Call<ApiModel>, response: Response<ApiModel>) {
-                    when (response.code()) {
-                        200 -> {
-                            apiModel = response.body()!!
-                            temp.value = apiModel.bank.name
-                        }
-                        404 -> {
-                            temp.value = context.getString(R.string.not_found)
-                        }
-                        else -> {
-                            temp.value = context.getString(R.string.unknown_code) + response.code()
+                            404 -> {
+                                temp.value = context.getString(R.string.not_found)
+                            }
+
+                            else -> {
+                                temp.value =
+                                    context.getString(R.string.unknown_code) + response.code()
+                            }
                         }
                     }
+
+                    override fun onFailure(call: Call<ApiModel>, t: Throwable) {
+                        temp.value = t.message!!
+                    }
                 }
-                override fun onFailure(call: Call<ApiModel>, t: Throwable) {
-                    temp.value = t.message!!
-                }
-            }
-        )
+            )
+        }
     }
-}
 
