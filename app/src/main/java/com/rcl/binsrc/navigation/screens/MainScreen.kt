@@ -27,6 +27,9 @@ import androidx.navigation.NavHostController
 import com.rcl.binsrc.R
 import com.rcl.binsrc.navigation.screens.structs.BinCard
 import com.rcl.binsrc.retrofit.ApiModel
+import com.rcl.binsrc.retrofit.Bank
+import com.rcl.binsrc.retrofit.Country
+import com.rcl.binsrc.retrofit.Number
 import com.rcl.binsrc.retrofit.RetrofitInstance
 import retrofit2.Call
 import retrofit2.Callback
@@ -40,6 +43,7 @@ class MainScreen {
     }
 
     lateinit var apiModel: ApiModel
+    var intapimod = mutableStateOf(ApiModel(Bank("", "", "",""), "", Country("", "", "", 0, 0, "", ""), Number(0, false), false, "", ""))
     var temp = mutableStateOf("")
     var visible = mutableStateOf(false)
 
@@ -69,7 +73,7 @@ class MainScreen {
                     Text(LocalContext.current.getString(R.string.button_text))
                 }
                 if (visible.value) {
-                    BinCard().Card()
+                    BinCard().Card(intapimod.value)
                 }
             }
         }
@@ -87,7 +91,7 @@ class MainScreen {
                         when (response.code()) {
                             200 -> {
                                 apiModel = response.body()!!
-                                BinCard().setApiModel(apiModel)
+                                intapimod.value = apiModel
                                 temp.value = apiModel.bank.name!!
                                 visible.value = true
                             }
