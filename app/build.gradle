@@ -54,4 +54,5 @@ dependencies {
     implementation libs.bundles.composeDebug
     implementation libs.bundles.accompanist
     implementation libs.bundles.retrofit
+    implementation libs.bundles.room
 }
