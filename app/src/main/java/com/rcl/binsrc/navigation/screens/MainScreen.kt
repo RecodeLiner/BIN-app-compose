@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.rcl.binsrc.R
+import com.rcl.binsrc.navigation.screens.structs.BinCard
 import com.rcl.binsrc.retrofit.ApiModel
 import com.rcl.binsrc.retrofit.RetrofitInstance
 import retrofit2.Call
@@ -40,6 +41,7 @@ class MainScreen {
 
     lateinit var apiModel: ApiModel
     var temp = mutableStateOf("")
+    var visible = mutableStateOf(false)
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -66,6 +68,9 @@ class MainScreen {
                 ) {
                     Text(LocalContext.current.getString(R.string.button_text))
                 }
+                if (visible.value) {
+                    BinCard().Card()
+                }
             }
         }
     }
@@ -82,7 +87,9 @@ class MainScreen {
                         when (response.code()) {
                             200 -> {
                                 apiModel = response.body()!!
+                                BinCard().setApiModel(apiModel)
                                 temp.value = apiModel.bank.name!!
+                                visible.value = true
                             }
 
                             404 -> {
