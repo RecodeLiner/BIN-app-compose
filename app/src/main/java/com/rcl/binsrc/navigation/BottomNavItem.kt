@@ -6,6 +6,12 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class BottomNavItem(var title:String, var icon: ImageVector, var route:String){
-    object Main : BottomNavItem("Main", Icons.Filled.Home,"MainScreen")
-    object History : BottomNavItem("History", Icons.Filled.History,"HistoryScreen")
+    object Main : BottomNavItem(
+        "Main",
+        Icons.Filled.Home,
+        "MainScreen")
+    object History : BottomNavItem(
+        "History",
+        Icons.Filled.History,
+        "HistoryScreen")
 }
