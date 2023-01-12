@@ -5,4 +5,5 @@
     <string name="unknown_code">"Неизвестный код результата: "</string>
     <string name="invalid_bin">Неправильный код BIN</string>
     <string name="not_found">Подобный BIN не обнаружен</string>
+    <string name="no_data">Не имеется данных по этому BIN</string>
 </resources>
