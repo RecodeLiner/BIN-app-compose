@@ -2,17 +2,20 @@ package com.rcl.binsrc.navigation.screens.structs
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.rcl.binsrc.retrofit.ApiModel
 
 class BinCard {
     @Composable
     fun Card(apiModel: ApiModel, modifier: Modifier) {
-        Box (modifier = modifier) {
+        Box (modifier = modifier
+            .padding(20.dp, 0.dp)) {
             Column(content = {
                 Text(text = "Main info:", color = Color.Red)
                 Box{

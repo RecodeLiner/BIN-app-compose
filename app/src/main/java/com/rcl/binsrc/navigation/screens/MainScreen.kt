@@ -73,7 +73,7 @@ class MainScreen {
                     Text(LocalContext.current.getString(R.string.button_text))
                 }
                 if (visible.value) {
-                    BinCard().Card(intapimod.value)
+                    BinCard().Card(intapimod.value, modifier)
                 }
             }
         }
