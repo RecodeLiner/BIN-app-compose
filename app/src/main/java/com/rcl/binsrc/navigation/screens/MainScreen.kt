@@ -66,7 +66,6 @@ class MainScreen {
                 ) {
                     Text(LocalContext.current.getString(R.string.button_text))
                 }
-                Text(text = temp.value)
             }
         }
     }
@@ -83,7 +82,7 @@ class MainScreen {
                         when (response.code()) {
                             200 -> {
                                 apiModel = response.body()!!
-                                temp.value = apiModel.bank.name
+                                temp.value = apiModel.bank.name!!
                             }
 
                             404 -> {
