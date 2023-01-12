@@ -4,5 +4,5 @@ data class Bank(
     val name: String?,
     val city: String,
     val phone: String,
-    var url: String
+    val url: String
 )
