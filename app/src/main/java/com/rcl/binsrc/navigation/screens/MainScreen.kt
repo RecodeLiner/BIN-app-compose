@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.room.Room
 import com.rcl.binsrc.R
 import com.rcl.binsrc.navigation.screens.structs.BinCard
 import com.rcl.binsrc.retrofit.ApiModel
@@ -30,7 +31,11 @@ import com.rcl.binsrc.retrofit.Bank
 import com.rcl.binsrc.retrofit.Country
 import com.rcl.binsrc.retrofit.Number
 import com.rcl.binsrc.retrofit.RetrofitInstance
+import com.rcl.binsrc.room.BinDao
+import com.rcl.binsrc.room.BinDataBase
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,11 +47,19 @@ class MainScreen {
     var resptext = mutableStateOf("")
     var visible = mutableStateOf(false)
     var bin = mutableStateOf("")
+    lateinit var db : BinDataBase
+    lateinit var binDao: BinDao
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @Composable
     fun Screen(navController: NavHostController) {
         InputBlock()
+        db = Room.databaseBuilder(
+            LocalContext.current,
+            BinDataBase::class.java,
+            "bin_table"
+        ).build()
+        binDao = db.BinDao()
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -100,6 +113,9 @@ class MainScreen {
                                 intapimod.value = apiModel
                                 resptext.value = apiModel.bank.name!!
                                 visible.value = true
+                                GlobalScope.launch {
+                                    binDao.insert(bin.value, apiModel)
+                                }
                             }
 
                             404 -> {
