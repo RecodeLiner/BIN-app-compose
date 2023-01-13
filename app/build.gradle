@@ -55,4 +55,5 @@ dependencies {
     implementation libs.bundles.accompanist
     implementation libs.bundles.retrofit
     implementation libs.bundles.room
+    annotationProcessor libs.bundles.roomCompiler
 }

@@ -1,4 +1,3 @@
-
 [versions]
 compose = "1.4.0-alpha03"
 compose_m3 = "1.0.0-alpha16"
@@ -45,4 +44,5 @@ compose = ["composeMaterial", "composeMaterialIcons", "composeMaterial3", "compo
 composeDebug = ["composeUiTooling", "composeUiToolingPreview", "composeTestManifest"]
 accompanist = ["accompanistNavigation", "accompanistSystemUi", "accompanistPager", "accompanistPagerIndicators"]
 retrofit = ["retrofit", "retrofitGson"]
-room = ["roomRuntime", "roomKtx", "roomCompiler"]
+room = ["roomRuntime", "roomKtx"]
+roomCompiler = ["roomCompiler"]
