@@ -25,15 +25,6 @@ import com.rcl.binsrc.retrofit.ApiModel
 
 class BinCard {
     @Composable
-    fun Nothing() {
-        Box(modifier = Modifier.padding(16.dp)) {
-            Column {
-                Text(text = "  Nothing found", style = TextStyle(fontWeight = FontWeight.Bold))
-            }
-        }
-    }
-
-    @Composable
     fun Card(apiModel: ApiModel, modifier: Modifier) {
         var url = apiModel.bank.url
         if (!apiModel.bank.url.contains("https://") && !apiModel.bank.url.contains("http://")) {
@@ -41,35 +32,31 @@ class BinCard {
         }
         val linkintent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         val phoneintent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + apiModel.bank.phone))
-        val locationintent =
-            Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + apiModel.country.name))
+        val locationintent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + apiModel.country.name))
         val context = LocalContext.current
-        Box(
-            modifier = modifier
-                .padding(20.dp, 0.dp)
-        ) {
+        Box(modifier = modifier.padding(20.dp, 0.dp)) {
             Column(content = {
-                Text(text = LocalContext.current.getString(R.string.main_info), fontWeight = FontWeight.Bold)
+                Text(
+                    text = LocalContext.current.getString(R.string.main_info),
+                    fontWeight = FontWeight.Bold
+                )
                 Box {
                     LazyColumn(
-                        modifier = Modifier.padding(0.dp, 10.dp),
+                        modifier = Modifier.padding(10.dp, 0.dp),
                         content = {
-                        item {
-                            Text(text = "Brand: ${apiModel.brand}")
-                            Text(text = "Scheme: ${apiModel.scheme}")
-                            Text(text = "Type: ${apiModel.type}")
-                            Text(text = "Prepaid: ${apiModel.prepaid}")
-                        }
-                    })
+                            item {
+                                Text(text = "Brand: ${apiModel.brand}")
+                                Text(text = "Scheme: ${apiModel.scheme}")
+                                Text(text = "Type: ${apiModel.type}")
+                                Text(text = "Prepaid: ${apiModel.prepaid}")
+                            }
+                        })
                 }
                 Text(text = "Bank:", fontWeight = FontWeight.Bold)
-                if (apiModel.bank.name == null) {
-                    Nothing()
-                } else {
-                    Box {
-                        LazyColumn(
-                            modifier = Modifier.padding(0.dp, 10.dp),
-                            content = {
+                Box {
+                    LazyColumn(
+                        modifier = Modifier.padding(10.dp, 0.dp),
+                        content = {
                             item {
                                 Text(text = "Name: ${apiModel.bank.name}")
                                 Row {
@@ -99,16 +86,13 @@ class BinCard {
                                 }
                             }
                         })
-                    }
+
                 }
                 Text(text = "Country:", fontWeight = FontWeight.Bold)
-                if (apiModel.country.name == null) {
-                    Nothing()
-                } else {
-                    Box {
-                        LazyColumn(
-                            modifier = Modifier.padding(0.dp, 10.dp),
-                            content = {
+                Box {
+                    LazyColumn(
+                        modifier = Modifier.padding(10.dp, 0.dp),
+                        content = {
                             item {
                                 Row {
                                     Text(text = "Name: "); ClickableText(
@@ -129,26 +113,24 @@ class BinCard {
                                 Text(text = "Latitude: ${apiModel.country.latitude}")
                                 Text(text = "Longitude: ${apiModel.country.longitude}")
                             }
-                        })
-                    }
+                        }
+                    )
                 }
 
                 Text(text = "Number:", fontWeight = FontWeight.Bold)
-                if (apiModel.number.length == null) {
-                    Nothing()
-                } else {
-                    Box {
-                        LazyColumn(
-                            modifier = Modifier.padding(0.dp, 10.dp),
-                            content = {
+                Box {
+                    LazyColumn(
+                        modifier = Modifier.padding(10.dp, 0.dp),
+                        content = {
                             item {
                                 Text(text = "Length: ${apiModel.number.length}")
                                 Text(text = "Luhn: ${apiModel.number.luhn}")
                             }
-                        })
-                    }
+                        }
+                    )
                 }
-            })
+            }
+            )
         }
     }
 }
