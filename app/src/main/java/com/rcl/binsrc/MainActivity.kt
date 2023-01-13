@@ -34,8 +34,7 @@ class MainActivity : ComponentActivity() {
             navController = rememberNavController()
             BinSRCTheme {
                 Surface(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Navbar()
