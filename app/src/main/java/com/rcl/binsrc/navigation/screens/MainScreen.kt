@@ -39,7 +39,7 @@ class MainScreen {
 
     lateinit var apiModel: ApiModel
     var intapimod = mutableStateOf(ApiModel(Bank("", "", "",""), "", Country("", "", "", 0, 0, "", ""), Number(0, false), false, "", ""))
-    var temp = mutableStateOf("")
+    var resptext = mutableStateOf("")
     var visible = mutableStateOf(false)
     var bin = mutableStateOf("")
 
@@ -76,6 +76,9 @@ class MainScreen {
                 if (visible.value) {
                     BinCard().Card(intapimod.value, modifier, bin.value)
                 }
+                else {
+                    Text(text = resptext.value)
+                }
             }
         }
     }
@@ -85,7 +88,7 @@ class MainScreen {
             val regEx = "^[0-9]{8}$".toRegex()
             val res = regEx.matches(BIN)
             if (!res) {
-                temp.value = context.getString(R.string.invalid_bin)
+                resptext.value = context.getString(R.string.invalid_bin)
                 return
             }
             RetrofitInstance.retrofitRq.getFromApi(BIN).enqueue(
@@ -95,23 +98,23 @@ class MainScreen {
                             200 -> {
                                 apiModel = response.body()!!
                                 intapimod.value = apiModel
-                                temp.value = apiModel.bank.name!!
+                                resptext.value = apiModel.bank.name!!
                                 visible.value = true
                             }
 
                             404 -> {
-                                temp.value = context.getString(R.string.not_found)
+                                resptext.value = context.getString(R.string.not_found)
                             }
 
                             else -> {
-                                temp.value =
+                                resptext.value =
                                     context.getString(R.string.unknown_code) + response.code()
                             }
                         }
                     }
 
                     override fun onFailure(call: Call<ApiModel>, t: Throwable) {
-                        temp.value = t.message!!
+                        resptext.value = t.message!!
                     }
                 }
             )
