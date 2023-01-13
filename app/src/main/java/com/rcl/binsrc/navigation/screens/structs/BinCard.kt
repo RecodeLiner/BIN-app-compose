@@ -25,7 +25,7 @@ import com.rcl.binsrc.retrofit.ApiModel
 
 class BinCard {
     @Composable
-    fun Card(apiModel: ApiModel, modifier: Modifier) {
+    fun Card(apiModel: ApiModel, modifier: Modifier, bin: String) {
         var url = apiModel.bank.url
         if (!apiModel.bank.url.contains("https://") && !apiModel.bank.url.contains("http://")) {
             url = "https://" + apiModel.bank.url
@@ -45,6 +45,7 @@ class BinCard {
                         modifier = Modifier.padding(10.dp, 0.dp),
                         content = {
                             item {
+                                Text(text = "BIN: $bin")
                                 Text(text = "Brand: ${apiModel.brand}")
                                 Text(text = "Scheme: ${apiModel.scheme}")
                                 Text(text = "Type: ${apiModel.type}")
