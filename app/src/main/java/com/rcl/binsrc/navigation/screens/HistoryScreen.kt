@@ -1,11 +1,25 @@
 package com.rcl.binsrc.navigation.screens
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 class HistoryScreen {
     @Composable
     fun Screen() {
-        Text(text = "temp")
+        /*
+
+        LazyColumn {
+            if (list.value?.isEmpty() == true) {
+                items(list.value!!.size) {
+                    BinCard().Card(list.value!![it].apiModel, Modifier, list.value!![it].bin  )
+                }
+            }
+            else {
+                item {
+                    Text(text = "No history")
+                }
+            }
+        }
+
+         */
     }
 }
