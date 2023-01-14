@@ -23,19 +23,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.room.Room
 import com.rcl.binsrc.R
-import com.rcl.binsrc.navigation.screens.structs.BinCard
+import com.rcl.binsrc.navigation.screens.structs.Card
 import com.rcl.binsrc.retrofit.ApiModel
 import com.rcl.binsrc.retrofit.Bank
 import com.rcl.binsrc.retrofit.Country
 import com.rcl.binsrc.retrofit.Number
 import com.rcl.binsrc.retrofit.RetrofitInstance
-import com.rcl.binsrc.room.BinDao
-import com.rcl.binsrc.room.BinDataBase
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,51 +37,40 @@ import retrofit2.Response
 class MainScreen {
 
     lateinit var apiModel: ApiModel
-    var intapimod = mutableStateOf(ApiModel(Bank("", "", "",""), "", Country("", "", "", 0, 0, "", ""), Number(0, false), false, "", ""))
+    var intapimod = mutableStateOf(ApiModel("",Bank("", "", "",""), "", Country("", "", "", "", "", "", ""), Number(0, false), false, "", ""))
     var resptext = mutableStateOf("")
     var visible = mutableStateOf(false)
     var bin = mutableStateOf("")
-    lateinit var db : BinDataBase
-    lateinit var binDao: BinDao
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @Composable
     fun Screen(navController: NavHostController) {
         InputBlock()
-        db = Room.databaseBuilder(
-            LocalContext.current,
-            BinDataBase::class.java,
-            "bin_table"
-        ).build()
-        binDao = db.BinDao()
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun InputBlock(modifier: Modifier = Modifier) {
         val context = LocalContext.current
-        Box(Modifier.fillMaxSize()) {
+        Box(Modifier.fillMaxSize().padding(20.dp, 0.dp)) {
             Column(Modifier.align(Alignment.Center)) {
                 TextField(
                     value = bin.value,
                     onValueChange = { bin.value = it },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     label = { Text(LocalContext.current.getString(R.string.label_text)) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp, 0.dp)
-                        .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(4.dp))
+                    modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(4.dp))
                 )
                 Button(
                     onClick = { loadData(bin.value, context) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(LocalContext.current.getString(R.string.button_text))
                 }
                 if (visible.value) {
-                    BinCard().Card(intapimod.value, modifier, bin.value)
+                    Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                        Card(apiModel)
+                    }
                 }
                 else {
                     Text(text = resptext.value)
@@ -95,7 +78,6 @@ class MainScreen {
             }
         }
     }
-        @OptIn(DelicateCoroutinesApi::class)
         private fun loadData(BIN: String, context: Context) {
 
             val regEx = "^[0-9]{8}$".toRegex()
@@ -110,12 +92,10 @@ class MainScreen {
                         when (response.code()) {
                             200 -> {
                                 apiModel = response.body()!!
+                                apiModel.bin = BIN
                                 intapimod.value = apiModel
                                 resptext.value = apiModel.bank.name!!
                                 visible.value = true
-                                GlobalScope.launch {
-                                    binDao.insert(bin.value, apiModel)
-                                }
                             }
 
                             404 -> {
