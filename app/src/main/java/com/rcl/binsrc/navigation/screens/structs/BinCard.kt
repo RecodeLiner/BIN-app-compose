@@ -2,136 +2,177 @@ package com.rcl.binsrc.navigation.screens.structs
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
-import com.rcl.binsrc.R
-import com.rcl.binsrc.retrofit.ApiModel
+import com.rcl.binsrc.room.Bin
 
 
-class BinCard {
+class BinCard{
+
     @Composable
-    fun Card(apiModel: ApiModel, modifier: Modifier, bin: String) {
-        var url = apiModel.bank.url
-        if (!apiModel.bank.url.contains("https://") && !apiModel.bank.url.contains("http://")) {
-            url = "https://" + apiModel.bank.url
-        }
-        val linkintent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        val phoneintent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + apiModel.bank.phone))
-        val locationintent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + apiModel.country.name))
+    fun Card(Bin: Bin){
+        val shadowedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
         val context = LocalContext.current
-        Box(modifier = modifier.padding(20.dp, 0.dp)) {
-            Column(content = {
-                Text(
-                    text = LocalContext.current.getString(R.string.main_info),
-                    fontWeight = FontWeight.Bold
-                )
-                Box {
-                    LazyColumn(
-                        modifier = Modifier.padding(10.dp, 0.dp),
-                        content = {
-                            item {
-                                Text(text = "BIN: $bin")
-                                Text(text = "Brand: ${apiModel.brand}")
-                                Text(text = "Scheme: ${apiModel.scheme}")
-                                Text(text = "Type: ${apiModel.type}")
-                                Text(text = "Prepaid: ${apiModel.prepaid}")
+        ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Column {
+                        Text(text = "BIN", color = shadowedTextColor)
+                        Text(text = Bin.bin)
+                    }
+                    if (Bin.scheme!= null) {
+                        Column {
+                            Text(text = "Scheme", color = shadowedTextColor)
+                            Text(text = Bin.scheme)
+                        }
+                    }
+                    if (Bin.brand != null) {
+                        Column {
+                            Text(text = "Brand", color = shadowedTextColor)
+                            Text(Bin.brand)
+                        }
+                    }
+                    Column {
+                        Text(text = "Card number", color = shadowedTextColor)
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Column {
+                                Text(
+                                    "Length",
+                                    color = shadowedTextColor,
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                                Text(Bin.number_length.toString())
                             }
-                        })
-                }
-                Text(text = "Bank:", fontWeight = FontWeight.Bold)
-                Box {
-                    LazyColumn(
-                        modifier = Modifier.padding(10.dp, 0.dp),
-                        content = {
-                            item {
-                                Text(text = "Name: ${apiModel.bank.name}")
-                                Row {
-                                    Text(text = "Link: "); ClickableText(
-                                    text = AnnotatedString(
-                                        text = apiModel.bank.url
-                                    ),
-                                    onClick = { startActivity(context, linkintent, null) },
-                                    style = TextStyle(
-                                        textDecoration = TextDecoration.None,
-                                        color = Color.Blue
-                                    )
+                            Column {
+                                Text(
+                                    "Luhn",
+                                    color = shadowedTextColor,
+                                    style = MaterialTheme.typography.bodySmall
                                 )
-                                }
-                                Text(text = "City: ${apiModel.bank.city}")
-                                Row {
-                                    Text(text = "Phone: "); ClickableText(
-                                    text = AnnotatedString(
-                                        text = apiModel.bank.phone
-                                    ),
-                                    onClick = { startActivity(context, phoneintent, null) },
-                                    style = TextStyle(
-                                        textDecoration = TextDecoration.None,
-                                        color = Color.Blue
-                                    )
-                                )
-                                }
-                            }
-                        })
-
-                }
-                Text(text = "Country:", fontWeight = FontWeight.Bold)
-                Box {
-                    LazyColumn(
-                        modifier = Modifier.padding(10.dp, 0.dp),
-                        content = {
-                            item {
-                                Row {
-                                    Text(text = "Name: "); ClickableText(
-                                    text = AnnotatedString(
-                                        text = apiModel.country.name
-                                    ),
-                                    onClick = { startActivity(context, locationintent, null) },
-                                    style = TextStyle(
-                                        textDecoration = TextDecoration.None,
-                                        color = Color.Blue
-                                    )
-                                )
-                                }
-                                Text(text = "Alpha2: ${apiModel.country.alpha2}")
-                                Text(text = "Numeric: ${apiModel.country.numeric}")
-                                Text(text = "Emoji: ${apiModel.country.emoji}")
-                                Text(text = "Currency: ${apiModel.country.currency}")
-                                Text(text = "Latitude: ${apiModel.country.latitude}")
-                                Text(text = "Longitude: ${apiModel.country.longitude}")
+                                Text(Bin.number_luhn.toString().capitalize(Locale.current))
                             }
                         }
-                    )
+                    }
+                    if (Bin.type != null) {
+                        Column {
+                            Text(
+                                "Type",
+                                color = shadowedTextColor,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                            Text(Bin.type.capitalize(Locale.current))
+                        }
+                    }
                 }
-
-                Text(text = "Number:", fontWeight = FontWeight.Bold)
-                Box {
-                    LazyColumn(
-                        modifier = Modifier.padding(10.dp, 0.dp),
-                        content = {
-                            item {
-                                Text(text = "Length: ${apiModel.number.length}")
-                                Text(text = "Luhn: ${apiModel.number.luhn}")
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    if (Bin.prepaid != null) {
+                        Column {
+                            Text(text = "Prepaid", color = shadowedTextColor)
+                            Text(Bin.prepaid.toString().capitalize(Locale.current))
+                        }
+                    }
+                    Column {
+                        Text(text = "Country", color = shadowedTextColor)
+                        ClickableText(
+                            text = AnnotatedString(text = Bin.country_emoji + " " + Bin.country_name),
+                            onClick = {
+                                startActivity(
+                                    context,
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse("geo:0,0?q=" + Bin.country_name)
+                                    ),
+                                    null
+                                )
+                            }
+                        )
+                        Text(
+                            text = "(latitude: " + Bin.country_latitude + ", longitude: " + Bin.country_longitude + ")",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                    Column {
+                        Text(text = "Currency", color = shadowedTextColor)
+                        Text(Bin.country_currency)
+                    }
+                    if (Bin.bank_name != null) {
+                        Column {
+                            Text(text = "Bank", color = shadowedTextColor)
+                            Text(text = Bin.bank_name)
+                            if (Bin.bank_url != null){
+                                ClickableText(text = AnnotatedString(Bin.bank_url),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    onClick = {
+                                        if (!Bin.bank_url.startsWith("http://")
+                                            && !Bin.bank_url.startsWith("https://")
+                                        ) {
+                                            startActivity(
+                                                context, Intent(
+                                                    Intent.ACTION_VIEW,
+                                                    Uri.parse("http://" + Bin.bank_url)
+                                                ), null
+                                            )
+                                        } else {
+                                            startActivity(
+                                                context,
+                                                Intent(
+                                                    Intent.ACTION_VIEW,
+                                                    Uri.parse(Bin.bank_url)
+                                                ),
+                                                null
+                                            )
+                                        }
+                                    })
+                            }
+                            if (Bin.bank_phone!=null){
+                                ClickableText(text = AnnotatedString(Bin.bank_phone),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    onClick = {
+                                        startActivity(
+                                            context, Intent(
+                                                Intent.ACTION_DIAL,
+                                                Uri.parse("tel:" + Bin.bank_phone)
+                                            ), null
+                                        )
+                                    }
+                                )
                             }
                         }
-                    )
+                    }
                 }
             }
-            )
         }
+    }
+
+    @Preview(name = "temp")
+    @Composable
+    fun CardPreview() {
+        val temp = Tempstruct.temp2
+        Card(temp)
     }
 }

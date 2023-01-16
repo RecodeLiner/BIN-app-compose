@@ -4,13 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.rcl.binsrc.retrofit.ApiModel
 
 @Dao
 interface BinDao {
-    @Query("SELECT * FROM bin_table")
-    fun all(): LiveData<List<Bin>>
+    @Query("SELECT * FROM bin_object")
+    fun getAll(): LiveData<List<Bin>>
 
     @Insert
-    suspend fun insert(bin: String, apiModel: ApiModel)
+    suspend fun insert(Bin: Bin)
+
+    @Query("DELETE FROM bin_object")
+    suspend fun deleteAll()
 }

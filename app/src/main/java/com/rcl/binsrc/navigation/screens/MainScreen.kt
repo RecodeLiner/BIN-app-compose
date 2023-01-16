@@ -1,6 +1,7 @@
 package com.rcl.binsrc.navigation.screens
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -22,14 +23,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.rcl.binsrc.R
-import com.rcl.binsrc.navigation.screens.structs.Card
+import com.rcl.binsrc.navigation.screens.structs.BinCard
 import com.rcl.binsrc.retrofit.ApiModel
-import com.rcl.binsrc.retrofit.Bank
-import com.rcl.binsrc.retrofit.Country
-import com.rcl.binsrc.retrofit.Number
 import com.rcl.binsrc.retrofit.RetrofitInstance
+import com.rcl.binsrc.room.Bin
+import com.rcl.binsrc.room.BinViewModel
+import com.rcl.binsrc.room.BinViewModelFactory
+import kotlinx.coroutines.DelicateCoroutinesApi
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,39 +40,48 @@ import retrofit2.Response
 class MainScreen {
 
     lateinit var apiModel: ApiModel
-    var intapimod = mutableStateOf(ApiModel("",Bank("", "", "",""), "", Country("", "", "", "", "", "", ""), Number(0, false), false, "", ""))
+    private lateinit var context: Context
+    private lateinit var mbinViewModel: BinViewModel
+    var intapimod = mutableStateOf(Bin(0, "","", false, "","", "", "", "", "", "", "", "", "", "", "", "", 0, false))
     var resptext = mutableStateOf("")
     var visible = mutableStateOf(false)
     var bin = mutableStateOf("")
 
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    @OptIn(DelicateCoroutinesApi::class)
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
     @Composable
     fun Screen(navController: NavHostController) {
+        context = LocalContext.current
+        mbinViewModel = viewModel(factory = BinViewModelFactory(context.applicationContext as Application))
         InputBlock()
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun InputBlock(modifier: Modifier = Modifier) {
-        val context = LocalContext.current
-        Box(Modifier.fillMaxSize().padding(20.dp, 0.dp)) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(20.dp, 0.dp)) {
             Column(Modifier.align(Alignment.Center)) {
                 TextField(
                     value = bin.value,
                     onValueChange = { bin.value = it },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     label = { Text(LocalContext.current.getString(R.string.label_text)) },
-                    modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(4.dp))
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, MaterialTheme.colorScheme.onSurface, RoundedCornerShape(4.dp))
                 )
                 Button(
-                    onClick = { loadData(bin.value, context) },
+                    onClick = { loadData(bin.value, context, mbinViewModel) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(LocalContext.current.getString(R.string.button_text))
                 }
                 if (visible.value) {
                     Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                        Card(apiModel)
+                        BinCard().Card(intapimod.value)
                     }
                 }
                 else {
@@ -78,7 +90,9 @@ class MainScreen {
             }
         }
     }
-        private fun loadData(BIN: String, context: Context) {
+        @OptIn(DelicateCoroutinesApi::class)
+        private fun loadData(BIN: String, context: Context, mBinViewModel: BinViewModel) {
+            visible.value = false
 
             val regEx = "^[0-9]{8}$".toRegex()
             val res = regEx.matches(BIN)
@@ -93,18 +107,20 @@ class MainScreen {
                             200 -> {
                                 apiModel = response.body()!!
                                 apiModel.bin = BIN
-                                intapimod.value = apiModel
-                                resptext.value = apiModel.bank.name!!
                                 visible.value = true
+                                val bin = Bin(0, BIN, apiModel.brand, apiModel.prepaid, apiModel.type, apiModel.scheme, apiModel.bank.name, apiModel.bank.city, apiModel.bank.phone, apiModel.bank.url, apiModel.country.name, apiModel.country.alpha2, apiModel.country.currency, apiModel.country.emoji!!, apiModel.country.latitude, apiModel.country.longitude, apiModel.country.numeric, apiModel.number.length, apiModel.number.luhn)
+                                intapimod.value = bin
+                                mBinViewModel.addBin(bin)
                             }
 
                             404 -> {
+                                visible.value = false
                                 resptext.value = context.getString(R.string.not_found)
                             }
 
                             else -> {
-                                resptext.value =
-                                    context.getString(R.string.unknown_code) + response.code()
+                                visible.value = false
+                                resptext.value = context.getString(R.string.unknown_code) + response.code()
                             }
                         }
                     }
