@@ -22,7 +22,7 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build release APK
+      - name: Build debug APK
         run: |
           ./gradlew assembleDebug
 
@@ -33,8 +33,8 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
 
       - name: Build release APK
-         run: | 
-           ./gradlew assembleRelease
+        run: |
+          ./gradlew assembleRelease
 
       - name: Upload release APK
         uses: actions/upload-artifact@v3
