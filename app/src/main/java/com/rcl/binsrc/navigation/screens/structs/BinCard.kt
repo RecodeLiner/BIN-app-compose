@@ -53,26 +53,28 @@ class BinCard{
                             Text(Bin.brand)
                         }
                     }
-                    Column {
-                        Text(text = "Card number", color = shadowedTextColor)
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Column {
-                                Text(
-                                    "Length",
-                                    color = shadowedTextColor,
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                                Text(Bin.number_length.toString())
-                            }
-                            Column {
-                                Text(
-                                    "Luhn",
-                                    color = shadowedTextColor,
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                                Text(Bin.number_luhn.toString().capitalize(Locale.current))
+                    if (Bin.number_length != null) {
+                        Column {
+                            Text(text = "Card number", color = shadowedTextColor)
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Column {
+                                    Text(
+                                        "Length",
+                                        color = shadowedTextColor,
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                    Text(Bin.number_length.toString())
+                                }
+                                Column {
+                                    Text(
+                                        "Luhn",
+                                        color = shadowedTextColor,
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                    Text(Bin.number_luhn.toString().capitalize(Locale.current))
+                                }
                             }
                         }
                     }
