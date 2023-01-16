@@ -15,8 +15,8 @@
     <string name="type">Type</string>
     <string name="prepaid">Prepaid</string>
     <string name="country">Country</string>
-    <string name="latitude">"(latitude: "</string>
-    <string name="longitude">, longitude: </string>
+    <string name="latitude">latitude</string>
+    <string name="longitude">longitude</string>
     <string name="currency">Currency</string>
     <string name="bank">Bank</string>
     <string name="empty_history">No data</string>

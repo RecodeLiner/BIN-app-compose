@@ -90,7 +90,7 @@ class BinCard{
                     Column {
                         Text(text = context.getString(R.string.country), color = shadowedTextColor)
                         ClickableText(text = AnnotatedString(text = Bin.country_emoji + " " + Bin.country_name), onClick = { startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Bin.country_name)),null) })
-                        Text(text = context.getString(R.string.latitude) + Bin.country_latitude + context.getString(R.string.longitude)+ Bin.country_longitude + ")", style = MaterialTheme.typography.bodySmall)
+                        Text(text = "(${context.getString(R.string.latitude)}: ${Bin.country_latitude}, ${context.getString(R.string.longitude)}: ${Bin.country_longitude})}", style = MaterialTheme.typography.bodySmall)
                     }
                     Column {
                         Text(text = context.getString(R.string.currency), color = shadowedTextColor)
