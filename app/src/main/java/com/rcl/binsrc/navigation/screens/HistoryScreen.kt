@@ -10,7 +10,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.rcl.binsrc.R
 import com.rcl.binsrc.navigation.screens.structs.BinCard
 import com.rcl.binsrc.navigation.screens.structs.Tempstruct
 import com.rcl.binsrc.room.Bin
@@ -21,7 +23,7 @@ import kotlinx.coroutines.flow.onEach
 
 @OptIn(DelicateCoroutinesApi::class)
 class HistoryScreen {
-    var list = mutableListOf<Bin>()
+    private var list = mutableListOf<Bin>()
 
     init {
         val mbinViewModel = Tempstruct.BinViewModel
@@ -45,7 +47,7 @@ class HistoryScreen {
                 }
                 else{
                     item {
-                        Text(text = "No data")
+                        Text(text = LocalContext.current.getString(R.string.empty_history))
                     }
                 }
             }

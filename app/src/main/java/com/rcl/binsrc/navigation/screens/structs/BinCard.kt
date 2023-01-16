@@ -20,6 +20,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import com.rcl.binsrc.R
 import com.rcl.binsrc.room.Bin
 
 
@@ -38,54 +39,42 @@ class BinCard{
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Column {
-                        Text(text = "BIN", color = shadowedTextColor)
+                        Text(text = context.getString(R.string.bin_code), color = shadowedTextColor)
                         Text(text = Bin.bin)
                     }
                     if (Bin.scheme!= null) {
                         Column {
-                            Text(text = "Scheme", color = shadowedTextColor)
+                            Text(text = context.getString(R.string.scheme), color = shadowedTextColor)
                             Text(text = Bin.scheme)
                         }
                     }
                     if (Bin.brand != null) {
                         Column {
-                            Text(text = "Brand", color = shadowedTextColor)
+                            Text(text = context.getString(R.string.brand), color = shadowedTextColor)
                             Text(Bin.brand)
                         }
                     }
                     if (Bin.number_length != null) {
                         Column {
-                            Text(text = "Card number", color = shadowedTextColor)
+                            Text(text = context.getString(R.string.card_number), color = shadowedTextColor)
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 Column {
-                                    Text(
-                                        "Length",
-                                        color = shadowedTextColor,
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
-                                    Text(Bin.number_length.toString())
+                                    Text(text = context.getString(R.string.card_number_length), color = shadowedTextColor, style = MaterialTheme.typography.bodySmall)
+                                    Text(text = Bin.number_length.toString())
                                 }
                                 Column {
-                                    Text(
-                                        "Luhn",
-                                        color = shadowedTextColor,
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
-                                    Text(Bin.number_luhn.toString().capitalize(Locale.current))
+                                    Text(text = context.getString(R.string.card_number_luhn), color = shadowedTextColor, style = MaterialTheme.typography.bodySmall)
+                                    Text(text = Bin.number_luhn.toString().capitalize(Locale.current))
                                 }
                             }
                         }
                     }
                     if (Bin.type != null) {
                         Column {
-                            Text(
-                                "Type",
-                                color = shadowedTextColor,
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                            Text(Bin.type.capitalize(Locale.current))
+                            Text(text = context.getString(R.string.type), color = shadowedTextColor, style = MaterialTheme.typography.bodySmall)
+                            Text(text = Bin.type.capitalize(Locale.current))
                         }
                     }
                 }
@@ -94,76 +83,27 @@ class BinCard{
                 ) {
                     if (Bin.prepaid != null) {
                         Column {
-                            Text(text = "Prepaid", color = shadowedTextColor)
-                            Text(Bin.prepaid.toString().capitalize(Locale.current))
+                            Text(text = context.getString(R.string.prepaid), color = shadowedTextColor)
+                            Text(text = Bin.prepaid.toString().capitalize(Locale.current))
                         }
                     }
                     Column {
-                        Text(text = "Country", color = shadowedTextColor)
-                        ClickableText(
-                            text = AnnotatedString(text = Bin.country_emoji + " " + Bin.country_name),
-                            onClick = {
-                                startActivity(
-                                    context,
-                                    Intent(
-                                        Intent.ACTION_VIEW,
-                                        Uri.parse("geo:0,0?q=" + Bin.country_name)
-                                    ),
-                                    null
-                                )
-                            }
-                        )
-                        Text(
-                            text = "(latitude: " + Bin.country_latitude + ", longitude: " + Bin.country_longitude + ")",
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                        Text(text = context.getString(R.string.country), color = shadowedTextColor)
+                        ClickableText(text = AnnotatedString(text = Bin.country_emoji + " " + Bin.country_name), onClick = { startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Bin.country_name)),null) })
+                        Text(text = context.getString(R.string.latitude) + Bin.country_latitude + context.getString(R.string.longitude)+ Bin.country_longitude + ")", style = MaterialTheme.typography.bodySmall)
                     }
                     Column {
-                        Text(text = "Currency", color = shadowedTextColor)
+                        Text(text = context.getString(R.string.currency), color = shadowedTextColor)
                         Text(Bin.country_currency)
                     }
                     if (Bin.bank_name != null) {
                         Column {
-                            Text(text = "Bank", color = shadowedTextColor)
+                            Text(text = context.getString(R.string.bank), color = shadowedTextColor)
                             Text(text = Bin.bank_name)
                             if (Bin.bank_url != null){
-                                ClickableText(text = AnnotatedString(Bin.bank_url),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    onClick = {
-                                        if (!Bin.bank_url.startsWith("http://")
-                                            && !Bin.bank_url.startsWith("https://")
-                                        ) {
-                                            startActivity(
-                                                context, Intent(
-                                                    Intent.ACTION_VIEW,
-                                                    Uri.parse("http://" + Bin.bank_url)
-                                                ), null
-                                            )
-                                        } else {
-                                            startActivity(
-                                                context,
-                                                Intent(
-                                                    Intent.ACTION_VIEW,
-                                                    Uri.parse(Bin.bank_url)
-                                                ),
-                                                null
-                                            )
-                                        }
-                                    })
+                                ClickableText(text = AnnotatedString(Bin.bank_url), style = MaterialTheme.typography.bodySmall, onClick = { if (!Bin.bank_url.startsWith("http://") && !Bin.bank_url.startsWith("https://")) { startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse("http://" + Bin.bank_url)),null) } else { startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse(Bin.bank_url)), null) }})
                             }
-                            if (Bin.bank_phone!=null){
-                                ClickableText(text = AnnotatedString(Bin.bank_phone),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    onClick = {
-                                        startActivity(
-                                            context, Intent(
-                                                Intent.ACTION_DIAL,
-                                                Uri.parse("tel:" + Bin.bank_phone)
-                                            ), null
-                                        )
-                                    }
-                                )
-                            }
+                            if (Bin.bank_phone!=null){ ClickableText(text = AnnotatedString(Bin.bank_phone), style = MaterialTheme.typography.bodySmall, onClick = { startActivity(context, Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Bin.bank_phone)),null) }) }
                         }
                     }
                 }
