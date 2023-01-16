@@ -1,6 +1,6 @@
 package com.rcl.binsrc.navigation.screens
 
-import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -21,24 +21,23 @@ import kotlinx.coroutines.flow.onEach
 
 @OptIn(DelicateCoroutinesApi::class)
 class HistoryScreen {
-    var list: List<Bin> = listOf()
+    var list = mutableListOf<Bin>()
+
     init {
-        val viewModel = Tempstruct.BinViewModel!!
-
-        viewModel.readAllData.onEach { data ->
-            list = data;
-            Log.d("HistoryScreen", "init: $list")
-        }.launchIn(GlobalScope)
-
+        val mbinViewModel = Tempstruct.BinViewModel
+        mbinViewModel?.readAllData?.onEach { data ->
+            Tempstruct.list = data as MutableList<Bin>
+        }?.launchIn(GlobalScope)
     }
 
     @Composable
     fun Screen() {
+        list = Tempstruct.list
         Box(modifier = Modifier.padding(0.dp,
             WindowInsets.systemBars
             .asPaddingValues()
             .calculateTopPadding(),  0.dp, 0.dp)) {
-            LazyColumn(modifier = Modifier.padding(1.dp)) {
+            LazyColumn(modifier = Modifier.padding(1.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 if (list.isNotEmpty()) {
                     items(list.size) {
                         BinCard().Card(list[it])
