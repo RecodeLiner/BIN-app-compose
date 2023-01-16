@@ -1,33 +1,43 @@
 package com.rcl.binsrc.navigation.screens
 
-import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rcl.binsrc.navigation.screens.structs.BinCard
+import com.rcl.binsrc.navigation.screens.structs.Tempstruct
 import com.rcl.binsrc.room.Bin
-import com.rcl.binsrc.room.BinViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @OptIn(DelicateCoroutinesApi::class)
 class HistoryScreen {
-    private var list = mutableListOf<Bin>()
-    private lateinit var context: Context
-    private lateinit var mbinViewModel: BinViewModel
+    var list: List<Bin> = listOf()
+    init {
+        val viewModel = Tempstruct.BinViewModel!!
 
-    @OptIn(DelicateCoroutinesApi::class)
+        viewModel.readAllData.onEach { data ->
+            list = data;
+            Log.d("HistoryScreen", "init: $list")
+        }.launchIn(GlobalScope)
+
+    }
+
     @Composable
     fun Screen() {
-        Box(modifier = Modifier){
-            /*Button(onClick = { GlobalScope.launch { Log.d("TAG",
-                mbinViewModel.readAllData.value.toString()
-            )} } ) {
-                Text(text = "Button")
-            }*/
+        Box(modifier = Modifier.padding(0.dp,
+            WindowInsets.systemBars
+            .asPaddingValues()
+            .calculateTopPadding(),  0.dp, 0.dp)) {
             LazyColumn(modifier = Modifier.padding(1.dp)) {
                 if (list.isNotEmpty()) {
                     items(list.size) {

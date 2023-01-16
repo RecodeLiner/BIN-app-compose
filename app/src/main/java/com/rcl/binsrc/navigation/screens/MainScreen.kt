@@ -27,12 +27,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.rcl.binsrc.R
 import com.rcl.binsrc.navigation.screens.structs.BinCard
+import com.rcl.binsrc.navigation.screens.structs.Tempstruct
 import com.rcl.binsrc.retrofit.ApiModel
 import com.rcl.binsrc.retrofit.RetrofitInstance
 import com.rcl.binsrc.room.Bin
 import com.rcl.binsrc.room.BinViewModel
 import com.rcl.binsrc.room.BinViewModelFactory
-import kotlinx.coroutines.DelicateCoroutinesApi
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,12 +47,12 @@ class MainScreen {
     var visible = mutableStateOf(false)
     var bin = mutableStateOf("")
 
-    @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
     @Composable
     fun Screen(navController: NavHostController) {
         context = LocalContext.current
         mbinViewModel = viewModel(factory = BinViewModelFactory(context.applicationContext as Application))
+        Tempstruct.BinViewModel = mbinViewModel
         InputBlock()
     }
 
@@ -90,7 +90,6 @@ class MainScreen {
             }
         }
     }
-        @OptIn(DelicateCoroutinesApi::class)
         private fun loadData(BIN: String, context: Context, mBinViewModel: BinViewModel) {
             visible.value = false
 

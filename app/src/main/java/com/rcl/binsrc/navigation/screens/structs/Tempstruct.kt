@@ -8,7 +8,7 @@ import com.rcl.binsrc.room.Bin
 import com.rcl.binsrc.room.BinViewModel
 
 object Tempstruct {
-    var mbinviewmodel: BinViewModel? = null
+    var BinViewModel: BinViewModel? = null
     var list = mutableListOf<Bin>()
     val temp2 = Bin(
         bin = "123456",
