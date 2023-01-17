@@ -100,9 +100,7 @@ class BinCard{
                         Column {
                             Text(text = context.getString(R.string.bank), color = shadowedTextColor)
                             Text(text = Bin.bank_name)
-                            if (Bin.bank_url != null){
-                                ClickableText(text = AnnotatedString(Bin.bank_url), style = MaterialTheme.typography.bodySmall, onClick = { if (!Bin.bank_url.startsWith("http://") && !Bin.bank_url.startsWith("https://")) { startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse("http://" + Bin.bank_url)),null) } else { startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse(Bin.bank_url)), null) }})
-                            }
+                            if (Bin.bank_url != null){ ClickableText(text = AnnotatedString(Bin.bank_url), style = MaterialTheme.typography.bodySmall, onClick = { if (!Bin.bank_url.startsWith("http://") && !Bin.bank_url.startsWith("https://")) { startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse("http://" + Bin.bank_url)),null) } else { startActivity(context, Intent(Intent.ACTION_VIEW, Uri.parse(Bin.bank_url)), null) }}) }
                             if (Bin.bank_phone!=null){ ClickableText(text = AnnotatedString(Bin.bank_phone), style = MaterialTheme.typography.bodySmall, onClick = { startActivity(context, Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Bin.bank_phone)),null) }) }
                         }
                     }
