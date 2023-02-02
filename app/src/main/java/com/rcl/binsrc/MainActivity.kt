@@ -38,7 +38,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Navbar()
-                    NavClass().Navigation(navController = navController)
                 }
             }
         }
@@ -56,7 +55,7 @@ class MainActivity : ComponentActivity() {
         Scaffold(
             bottomBar = {
                 NavigationBar(
-                    containerColor = Color.Transparent,
+                    containerColor = MaterialTheme.colorScheme.background
                 ) {
                     bottomNavItem.forEach { item ->
                         val selected = item.route == backStackEntry.value?.destination?.route
@@ -81,6 +80,7 @@ class MainActivity : ComponentActivity() {
                 }
             },
             content = {
+                NavClass().Navigation(navController = navController)
             }
         )
     }

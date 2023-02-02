@@ -42,7 +42,29 @@ class MainScreen {
     lateinit var apiModel: ApiModel
     private lateinit var context: Context
     private lateinit var mbinViewModel: BinViewModel
-    var intapimod = mutableStateOf(Bin(0, "","", false, "","", "", "", "", "", "", "", "", "", "", "", "", 0, false))
+    var intapimod = mutableStateOf(
+        Bin(
+            0,
+            "",
+            "",
+            false,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            0,
+            false
+        )
+    )
     var resptext = mutableStateOf("")
     var visible = mutableStateOf(false)
     var bin = mutableStateOf("")
@@ -51,7 +73,8 @@ class MainScreen {
     @Composable
     fun Screen(navController: NavHostController) {
         context = LocalContext.current
-        mbinViewModel = viewModel(factory = BinViewModelFactory(context.applicationContext as Application))
+        mbinViewModel =
+            viewModel(factory = BinViewModelFactory(context.applicationContext as Application))
         Tempstruct.BinViewModel = mbinViewModel
         InputBlock()
     }
@@ -62,7 +85,8 @@ class MainScreen {
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(20.dp, 0.dp)) {
+                .padding(20.dp, 0.dp)
+        ) {
             Column(Modifier.align(Alignment.Center)) {
                 TextField(
                     value = bin.value,
@@ -83,52 +107,73 @@ class MainScreen {
                     Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                         BinCard().Card(intapimod.value)
                     }
-                }
-                else {
+                } else {
                     Text(text = resptext.value)
                 }
             }
         }
     }
-        private fun loadData(BIN: String, context: Context, mBinViewModel: BinViewModel) {
-            visible.value = false
 
-            val regEx = "^[0-9]{8}$".toRegex()
-            val res = regEx.matches(BIN)
-            if (!res) {
-                resptext.value = context.getString(R.string.invalid_bin)
-                return
-            }
-            RetrofitInstance.retrofitRq.getFromApi(BIN).enqueue(
-                object : Callback<ApiModel> {
-                    override fun onResponse(call: Call<ApiModel>, response: Response<ApiModel>) {
-                        when (response.code()) {
-                            200 -> {
-                                apiModel = response.body()!!
-                                apiModel.bin = BIN
-                                visible.value = true
-                                val bin = Bin(0, BIN, apiModel.brand, apiModel.prepaid, apiModel.type, apiModel.scheme, apiModel.bank.name, apiModel.bank.city, apiModel.bank.phone, apiModel.bank.url, apiModel.country.name, apiModel.country.alpha2, apiModel.country.currency, apiModel.country.emoji!!, apiModel.country.latitude, apiModel.country.longitude, apiModel.country.numeric, apiModel.number.length, apiModel.number.luhn)
-                                intapimod.value = bin
-                                mBinViewModel.addBin(bin)
-                            }
+    private fun loadData(BIN: String, context: Context, mBinViewModel: BinViewModel) {
+        visible.value = false
 
-                            404 -> {
-                                visible.value = false
-                                resptext.value = context.getString(R.string.not_found)
-                            }
+        val regEx = "^[0-9]{8}$".toRegex()
+        val res = regEx.matches(BIN)
+        if (!res) {
+            resptext.value = context.getString(R.string.invalid_bin)
+            return
+        }
+        RetrofitInstance.retrofitRq.getFromApi(BIN).enqueue(
+            object : Callback<ApiModel> {
+                override fun onResponse(call: Call<ApiModel>, response: Response<ApiModel>) {
+                    when (response.code()) {
+                        200 -> {
+                            apiModel = response.body()!!
+                            apiModel.bin = BIN
+                            visible.value = true
+                            val bin = Bin(
+                                0,
+                                BIN,
+                                apiModel.brand,
+                                apiModel.prepaid,
+                                apiModel.type,
+                                apiModel.scheme,
+                                apiModel.bank.name,
+                                apiModel.bank.city,
+                                apiModel.bank.phone,
+                                apiModel.bank.url,
+                                apiModel.country.name,
+                                apiModel.country.alpha2,
+                                apiModel.country.currency,
+                                apiModel.country.emoji!!,
+                                apiModel.country.latitude,
+                                apiModel.country.longitude,
+                                apiModel.country.numeric,
+                                apiModel.number.length,
+                                apiModel.number.luhn
+                            )
+                            intapimod.value = bin
+                            mBinViewModel.addBin(bin)
+                        }
 
-                            else -> {
-                                visible.value = false
-                                resptext.value = context.getString(R.string.unknown_code) + response.code()
-                            }
+                        404 -> {
+                            visible.value = false
+                            resptext.value = context.getString(R.string.not_found)
+                        }
+
+                        else -> {
+                            visible.value = false
+                            resptext.value =
+                                context.getString(R.string.unknown_code) + response.code()
                         }
                     }
-
-                    override fun onFailure(call: Call<ApiModel>, t: Throwable) {
-                        resptext.value = t.message!!
-                    }
                 }
-            )
-        }
+
+                override fun onFailure(call: Call<ApiModel>, t: Throwable) {
+                    resptext.value = t.message!!
+                }
+            }
+        )
     }
+}
 
